@@ -1,3 +1,6 @@
 /target/
 /.bsp/
 /.idea/
+target/*
+/project/target/*
+/out/*

@@ -28,6 +28,17 @@ object Main extends App {
 
   println("Number of games grouped by months (more functional way): " + playsGroupedByDate)
 
+
+  // get number of tournaments by months
+
+  val numberOfTournamentsGroupedByMonth = rest.groupBy(extractMonthFromLine).view.mapValues(groupMonthlyRecordsByTourneyName).toMap
+  println("Number of tournaments grouped by months: " + numberOfTournamentsGroupedByMonth)
+
+  val numberOfTournamentsGroupedByMonthViaCompoundKey = rest.groupMapReduce(extractTourneyNameAndMonth)(_ => 1)(_ + _)
+  println("Number of tournaments grouped by months (second solution): " + numberOfTournamentsGroupedByMonth)
+
+  // get number of wins of Medvedev by tournaments
+
   // TODO: pattern matching with condition
 
   def numberOfGamesPlayedBy(playerName: String) : Int = {
@@ -43,6 +54,24 @@ object Main extends App {
       val loserName: String = tokens(headers("loser_name"))
       loserName == playerName || winnerName == playerName
     }
+  }
+
+  def extractTourneyNameAndMonth(line: String): (Month, String) = {
+    val tokens = line.split(",")
+    val tourneyDate = tokens(headers("tourney_date"))
+    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+    val date: LocalDate = LocalDate.parse(tourneyDate, formatter)
+
+    (date.getMonth, tokens(headers("tourney_name")))
+  }
+
+  def groupMonthlyRecordsByTourneyName(lines: List[String]): Integer = {
+    lines.map(extractTourneyNameFromLine).toSet.size
+  }
+
+  def extractTourneyNameFromLine(line: String) : String = {
+    val tokens = line.split(",")
+    tokens(headers("tourney_name"))
   }
 
   def extractMonthFromLine(line: String) : Month = {

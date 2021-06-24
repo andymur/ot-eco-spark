@@ -30,4 +30,6 @@ object CollectionsRunner extends App {
 
   // grouping by groupMapReduce (group -> map -> reduce)
   print(myList.groupMapReduce(el => el)(_ => 1)(_ + _)) // Map(France -> 2, England -> 1)
+
+
 }

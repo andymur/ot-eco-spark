@@ -17,6 +17,8 @@ name := "ot-eco-spark"
 organization := "com.andymur"
 version := "1.0"
 
+//mainClass := Some("com.andymur.ot.ecospark.Games")
+
 // Note, it's not required for you to define these three settings. These are
 // mostly only necessary if you intend to publish your library's binaries on a
 // place like Sonatype or Bintray.
@@ -24,9 +26,12 @@ version := "1.0"
 
 // Want to use a published library in your project?
 // You can define other libraries as dependencies in your build like this:
-
+//TODO: provided deps not added into final jar (like scope in mvn)
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 libraryDependencies += "io.spray" %%  "spray-json" % "1.3.6"
+
+
+// addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.15.0")
 
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,
 // we're adding the scala-parser-combinators dependency to the set of dependencies

@@ -2,6 +2,7 @@ package com.andymur.ot.ecospark
 
 import spray.json._
 
+import java.io._
 import scala.io.Source
 
 /*
@@ -16,6 +17,7 @@ import scala.io.Source
 object FirstHomeWorkRunner extends App {
 
   case class Name(official: String) {}
+
   // how to name property differently from json data field? i.e. capitals instead of capital
   case class InCountry(area: Double, name: Name, region: String, capital: List[String]) {}
 
@@ -31,22 +33,31 @@ object FirstHomeWorkRunner extends App {
   // why is it here?..
   import CountryJsonProtocol._
 
+  val outFileName = args(0)
+  val pw = new PrintWriter(new File(outFileName))
   val source = Source.fromURL("https://raw.githubusercontent.com/mledoze/countries/master/countries.json")
+  // do we have try with resources?
   try {
     val jsonAst = JsonParser(source.mkString)
 
-    val top10AfricanCountriesBySquareSize: List[InCountry] = handleInput(jsonAst.convertTo[List[InCountry]])
+    val top10AfricanCountriesBySquareSize: List[InCountry] = handleInput("Africa")(jsonAst.convertTo[List[InCountry]])
+    val top10AfricanCountriesBySquareSizeJson = top10AfricanCountriesBySquareSize.map(inOutCountryMapper).toJson.prettyPrint
 
     println("Top 10 african countries by their square size: " + top10AfricanCountriesBySquareSize)
-    println("In JSON format: " + top10AfricanCountriesBySquareSize.map(inOutCountryMapper).toJson)
+    println("In JSON format: " + top10AfricanCountriesBySquareSizeJson)
+
+    pw.println(top10AfricanCountriesBySquareSizeJson)
   } finally {
     if (source != null) {
       source.close()
     }
+    if (pw != null) {
+      pw.close()
+    }
   }
 
-  def handleInput(countries: List[InCountry]): List[InCountry] = {
-    countries.filter(c => c.region == "Africa").sortBy(_.area).reverse.take(10)
+  def handleInput(region: String)(countries: List[InCountry]): List[InCountry] = {
+    countries.filter(c => c.region == region).sortBy(_.area).reverse.take(10)
   }
 
   def inOutCountryMapper(inCountry: InCountry) : OutCountry = {

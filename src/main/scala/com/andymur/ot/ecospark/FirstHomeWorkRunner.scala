@@ -16,10 +16,10 @@ import scala.io.Source
 //                    https://blog.knoldus.com/sorting-in-scala-using-sortedsortby-and-sortwith-function/
 object FirstHomeWorkRunner extends App {
 
-  case class Name(official: String) {}
+  case class Name(official: String)
 
   // how to name property differently from json data field? i.e. capitals instead of capital
-  case class InCountry(area: Double, name: Name, region: String, capital: List[String]) {}
+  case class InCountry(area: Double, name: Name, region: String, capital: List[String])
 
   case class OutCountry(name: String, capital: String, area: Double)
 

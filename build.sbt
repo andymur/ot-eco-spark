@@ -26,7 +26,6 @@ version := "1.0"
 
 // Want to use a published library in your project?
 // You can define other libraries as dependencies in your build like this:
-//TODO: provided deps not added into final jar (like scope in mvn)
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 libraryDependencies += "io.spray" %%  "spray-json" % "1.3.6"
 

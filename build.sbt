@@ -27,16 +27,9 @@ version := "1.0"
 // Want to use a published library in your project?
 // You can define other libraries as dependencies in your build like this:
 
-libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+// libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 
-val circeVersion = "0.14.1"
-
-libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core",
-  "io.circe" %% "circe-generic",
-  "io.circe" %% "circe-parser"
-).map(_ % circeVersion)
-
+libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "3.2.1"
 // addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.15.0")
 
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,

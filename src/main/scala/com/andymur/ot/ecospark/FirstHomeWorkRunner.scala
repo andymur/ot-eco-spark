@@ -66,7 +66,7 @@ object FirstHomeWorkRunner extends App {
   }
 
   def handleInput(region: String)(countries: List[InCountry]): List[InCountry] = {
-    countries.filter(c => c.region == region).sortBy(_.area).reverse.take(10)
+    countries.filter(c => c.region == region).sortBy(- _.area).take(10)
   }
 
   def inOutCountryMapper(inCountry: InCountry) : OutCountry = {

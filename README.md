@@ -1,41 +1,47 @@
-# OTUS Spark Ecosystem Course. Second Homework. Working with HDFS using Scala.
+# OTUS Spark Ecosystem Course. Third Homework. Working with RDD/DataFrame/DataSet in Spark.
+
+### Goal
+
+After completion of this homework you'll gain an experience working with RDD / DataFrame and DataSet APIs. You will be able to build DataMart based on raw data using Spark and various APIs. 
 
 ### Assignment
 
-Create an application which moves all the data from hdfs://stage to hdfs://ods using following rules:
-structure of directories (date=<date>) must be preserved but all files in each directory must be merged into one
+#### First part
 
-Example:
-we have directory /stage/date=2020-11-11 with the following files part-0000.csv, part-0001.csv
-afterwards there should be directory /ods/date=2020-11-11 with the one file part-0000.csv which has all the date from the two above mentioned files.
+Create the first data frame containing facts from the data which are available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
+Create the second data frame containing locations from the data available in csv format (src/main/resources/data/taxi_zones.csv).
+Using Spark DataFrame DSL create a table with most popular areas of taxi orders. Print the result and also store it into the output parquet file.
+
+#### Second part
+
+Create RDD containing facts from the data available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
+Create lambda function to build a table showing the most frequent order time. Print the result and also store into the space separated text file.
+
+#### Third part
+
+Create DataSet containing facts from the data available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
+Using Spark DataSet DSL and lambda function create the table showing ride distance distribution. Print the result and store it into the PostgreSQL DB table. For that purpose design and create the table structure and store it within the project.
+
+i.e., you end up with Data Mart containing different columns (e.g., total number of rides, average ride distance, min and max ride distance etc).
 
 ### Solution
 
-Can be found in ```src/main/scala/com/andymur/ot/ecospark/HdfsHomeWorkRunner.scala```
+#### First part
 
-### How to check, compile, build & run
+Can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiHomeWorkTaxi.scala``` or as Zeppelin notebook ```src/main/resources/OT-ECO-HW3.1.json```
+
+### How to check (compile, build & run, etc)
 
 #### Checkout
 
-Solution stored in the git repo. For checkout simply do this
+Solution stored in the git repo. For checkout simply do this:
 
-```git clone -b second_home_work_hdfs https://github.com/andymur/ot-eco-spark.git```
+```git clone -b third_home_work_datamart https://github.com/andymur/ot-eco-spark.git``` or check the link ```https://github.com/andymur/ot-eco-spark/tree/third_home_work_datamart```
 
 #### Compile & Run
 
-We can compile & run our solution with a help from SBT. Just run following commands from the project's directory.
+We can compile & run our solution with a help from SBT or from IDE, see appropriate solution files above in "Solution" section (one file per each homework part).
 
-* ```sbt compile```
-* ```sbt run```
+#### Use with Yandex Cloud
 
-Before running the application please make sure that all prerequisites are there, hadoop cluster is up and running and source data has been loaded
-
-#### Build JAR file & Run
-
-Thanks to sbt-assembly plugin included here project/assembly.sbt we can build our project as JAR file with a command
-```sbt assembly```
-
-After we can run it with
-
-* ```cd ./target/scala-<version> (e.g. ./target/scala-2.13/)```
-* ```java -jar ot-eco-spark-assembly-1.0.jar```
+You can also check Zeppelin notebook (one per each homework part). Import & run them (beware of different path you can have in your case, usually all paths are stored in the variables in the very beginning of the notebook).

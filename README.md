@@ -30,6 +30,14 @@ i.e., you end up with Data Mart containing different columns (e.g., total number
 
 Can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiHomeWorkTaxi.scala``` or as Zeppelin notebook ```src/main/resources/OT-ECO-HW3.1.json```
 
+#### Second part
+
+Can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiRDDMostFrequentHours.scala``` or as Zeppelin notebook ```src/main/resources/OT-ECO-HW3.2.json```
+
+#### Third part
+
+TBD
+
 ### How to check (compile, build & run, etc)
 
 #### Checkout

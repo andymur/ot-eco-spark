@@ -20,7 +20,8 @@ Create lambda function to build a table showing the most frequent order time. Pr
 #### Third part
 
 Create DataSet containing facts from the data available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
-Using Spark DataSet DSL and lambda function create the table showing ride distance distribution. Print the result and store it into the PostgreSQL DB table. For that purpose design and create the table structure and store it within the project.
+Using Spark DataSet DSL and lambda function create the table showing ride distance distribution. 
+Print the result and store it into the PostgreSQL DB table. For that purpose design and create the table structure and store it within the project.
 
 i.e., you end up with Data Mart containing different columns (e.g., total number of rides, average ride distance, min and max ride distance etc).
 

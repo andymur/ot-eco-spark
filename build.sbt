@@ -51,6 +51,8 @@ libraryDependencies ++= Seq(
   "org.apache.flink" % "flink-test-utils-junit" % flinkVersion,
   "org.apache.flink" %% "flink-test-utils" % flinkVersion,
   "org.apache.flink" %% "flink-streaming-java" % flinkVersion,
-  "org.apache.flink" %% "flink-runtime" % flinkVersion
+  "org.apache.flink" %% "flink-runtime" % flinkVersion,
+  // adding postgresql
+  "org.postgresql" % "postgresql" % "42.2.23"
 )
 

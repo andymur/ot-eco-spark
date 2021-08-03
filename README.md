@@ -37,7 +37,8 @@ Can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiRDDMostFrequent
 
 #### Third part
 
-TBD
+Make sure you started postgresql docker image. You can do it running ```docker-compose up``` from the project directory.
+After you can run the application which can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiDataSetIntoPG.scala```
 
 ### How to check (compile, build & run, etc)
 

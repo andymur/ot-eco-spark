@@ -3,9 +3,9 @@ package com.andymur.ot.ecospark
 import org.apache.hadoop.conf._
 import org.apache.hadoop.fs._
 
-import java.io.{InputStream, OutputStream}
+import java.io.OutputStream
 import java.net.URI
-import java.util
+import scala.util.Using
 
 /**
  * Scala application which moves all the data from hdfs://stage to hdfs://ods using following rules:
@@ -28,41 +28,39 @@ object HdfsHomeWorkRunner extends App {
   // merge files from the source directory into the destination with a name of part-0000.csv
 
   val conf = new Configuration()
-  val fileSystem = FileSystem.get(new URI("hdfs://localhost:9000"), conf)
-  try {
 
-    val srcPath = new Path("/stage")
+  Using(FileSystem.get(new URI("hdfs://localhost:9000"), conf)) {
+    fileSystem => {
+      val srcPath = new Path("/stage")
 
-    if (fileSystem.exists(new Path("/ods"))) {
-      println("Destination directory already exists!")
-      System.exit(0)
-    }
+      if (fileSystem.exists(new Path("/ods"))) {
+        println("Destination directory already exists!")
+        System.exit(0)
+      }
 
-    if (!fileSystem.exists(srcPath)) {
-      println("Source directory doesn't exist!")
-      System.exit(0)
-    }
+      if (!fileSystem.exists(srcPath)) {
+        println("Source directory doesn't exist!")
+        System.exit(0)
+      }
 
-    for (fileStatus <- fileSystem.listStatus(srcPath, new GlobFilter("date=*")).filter(_.isDirectory)) {
-      val dirName = fileStatus.getPath.getName
-      println("Processing source directory " + dirName)
-      val srcDirectoryName = "/stage" + Path.SEPARATOR + dirName
-      val srcDirPath = new Path(srcDirectoryName)
-      val destDirectoryName = "/ods" + Path.SEPARATOR + dirName
-      createDirectory(destDirectoryName)
-      val parts : List[Path] = fileSystem.listStatus(srcDirPath, new GlobFilter("part-[0-9][0-9][0-9][0-9].csv*"))
-        .sortBy(_.getPath.getName).map(_.getPath).toList
-      mergeParts(parts, new Path(destDirectoryName + Path.SEPARATOR + "part-0000.csv"))
-      remove(srcDirectoryName)
-    }
-    println("Successfully completed!")
-  } finally {
-    if (fileSystem != null) {
-      fileSystem.close()
+      fileSystem.listStatus(srcPath, new GlobFilter("date=*")).filter(_.isDirectory).foreach(fileStatus => {
+        val dirName = fileStatus.getPath.getName
+        println("Processing source directory " + dirName)
+        val srcDirectoryName = "/stage" + Path.SEPARATOR + dirName
+        val srcDirPath = new Path(srcDirectoryName)
+        val destDirectoryName = "/ods" + Path.SEPARATOR + dirName
+        createDirectory(fileSystem, destDirectoryName)
+        val parts : List[Path] = fileSystem.listStatus(srcDirPath, new GlobFilter("part-[0-9][0-9][0-9][0-9].csv*"))
+          .sortBy(_.getPath.getName).map(_.getPath).toList
+        mergeParts(fileSystem, parts, new Path(destDirectoryName + Path.SEPARATOR + "part-0000.csv"))
+        remove(fileSystem, srcDirectoryName)
+      })
+
+      println("Successfully completed!")
     }
   }
 
-  def createDirectory(directoryName: String): Unit = {
+  def createDirectory(fileSystem: FileSystem, directoryName: String): Unit = {
     val directoryPath = new Path(directoryName)
     if (fileSystem.exists(directoryPath)) {
       throw new IllegalArgumentException("Directory already exists!")
@@ -70,7 +68,7 @@ object HdfsHomeWorkRunner extends App {
     fileSystem.mkdirs(directoryPath)
   }
 
-  def remove(fileName: String): Unit = {
+  def remove(fileSystem: FileSystem, fileName: String): Unit = {
     val filePath = new Path(fileName)
     if (!fileSystem.exists(filePath)) {
       throw new IllegalArgumentException("File or directory doesn't exist!")
@@ -78,40 +76,28 @@ object HdfsHomeWorkRunner extends App {
     fileSystem.delete(filePath, true)
   }
 
-  def mergeParts(parts: List[Path], resultFilePath: Path): Unit = {
-    val fos: OutputStream = fileSystem.create(resultFilePath)
-    try {
-      for (part <- parts) {
-        val fis: InputStream = fileSystem.open(part)
-        try {
-          val barr = new Array[Byte](1024)
-          var bytesRead = fis.read(barr)
-          writePortion(bytesRead, barr, fos)
-          while (bytesRead > 0) {
-            bytesRead = fis.read(barr)
+  def mergeParts(fileSystem: FileSystem, parts: List[Path], resultFilePath: Path): Unit = {
+    Using(fileSystem.create(resultFilePath)) { fos => {
+      parts.foreach(part => {
+        Using(fileSystem.open(part)) {
+          fis => {
+            val barr = new Array[Byte](1024)
+            var bytesRead = fis.read(barr)
             writePortion(bytesRead, barr, fos)
+            while (bytesRead > 0) {
+              bytesRead = fis.read(barr)
+              writePortion(bytesRead, barr, fos)
+            }
           }
-        } finally {
-          fis.close()
         }
-      }
-    } finally {
-      fos.close()
-    }
+      })
+    } }
   }
 
   def writePortion(bytesRead: Int, readData: Array[Byte], out: OutputStream): Unit = {
-    if (bytesRead <= 0) {
-      return
+    if (bytesRead > 0) {
+      out.write(readData, 0, bytesRead)
     }
-    out.write(readData, 0, bytesRead)
   }
 
-  // merge to string buffer
-  def writePortion(bytesRead: Int, readData: Array[Byte], out: StringBuilder): Unit = {
-    if (bytesRead <= 0) {
-      return
-    }
-    out.append(new String(util.Arrays.copyOf(readData, bytesRead), "UTF-8"))
-  }
 }

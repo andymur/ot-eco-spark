@@ -1,41 +1,26 @@
-# OTUS Spark Ecosystem Course. Second Homework. Working with HDFS using Scala.
+# OTUS Spark Ecosystem Course. Fifth Homework. Working with Apache Kafka.
+
+### Goal
+
+To learn work with Apache Kafka. Handle Apache Kafka topics. Create producers and consumers for Apache Kafka in Scala programming language.
+
+### Prerequisites
+
+Before starting the assignment please start Apache Kafka cluster up (you can use docker compose: https://github.com/Gorini4/kafka_scala_example) and create topic ```books``` with three partitions.
 
 ### Assignment
 
-Create an application which moves all the data from hdfs://stage to hdfs://ods using following rules:
-structure of directories (date=<date>) must be preserved but all files in each directory must be merged into one
-
-Example:
-we have directory /stage/date=2020-11-11 with the following files part-0000.csv, part-0001.csv
-afterwards there should be directory /ods/date=2020-11-11 with the one file part-0000.csv which has all the date from the two above mentioned files.
+Create an application which reads the data from csv data file (https://www.kaggle.com/sootersaalu/amazon-top-50-bestselling-books-2009-2019) and loads them into abovementioned topic in JSON format.
+After that it should read the last 5 records of each partition from the topic (last means with the greatest offset value). While reading from the topic you're allowed to keep not more than 15 records at a time.
 
 ### Solution
 
-Can be found in ```src/main/scala/com/andymur/ot/ecospark/HdfsHomeWorkRunner.scala```
+Can be found in ```TBD```
 
 ### How to check, compile, build & run
 
 #### Checkout
 
-Solution stored in the git repo. For checkout simply do this
-
-```git clone -b second_home_work_hdfs https://github.com/andymur/ot-eco-spark.git```
-
 #### Compile & Run
 
-We can compile & run our solution with a help from SBT. Just run following commands from the project's directory.
-
-* ```sbt compile```
-* ```sbt run```
-
-Before running the application please make sure that all prerequisites are there, hadoop cluster is up and running and source data has been loaded
-
 #### Build JAR file & Run
-
-Thanks to sbt-assembly plugin included here project/assembly.sbt we can build our project as JAR file with a command
-```sbt assembly```
-
-After we can run it with
-
-* ```cd ./target/scala-<version> (e.g. ./target/scala-2.13/)```
-* ```java -jar ot-eco-spark-assembly-1.0.jar```

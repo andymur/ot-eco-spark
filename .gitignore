@@ -7,3 +7,7 @@ project/project
 project/project/*
 /out/*
 build.properties
+/ot-eco-rsa
+/ot-eco-rsa.pub
+/ot-eco-rsa-cluster
+/ot-eco-rsa-cluster.pub

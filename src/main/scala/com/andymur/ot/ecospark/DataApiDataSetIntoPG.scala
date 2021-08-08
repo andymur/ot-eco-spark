@@ -1,8 +1,6 @@
 package com.andymur.ot.ecospark
 
-import org.apache.spark.sql.SparkSession
-
-import java.sql.{Connection, DriverManager}
+import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 
 object DataApiDataSetIntoPG extends App {
 
@@ -28,6 +26,7 @@ object DataApiDataSetIntoPG extends App {
 
   // case class represents db record values
   case class DataMartRec(
+    hourOfDay: Int,
     totalRides: Int,
     minDistance: Double,
     maxDistance: Double,
@@ -50,32 +49,51 @@ object DataApiDataSetIntoPG extends App {
       "DOLocationID", "payment_type", "fare_amount", "extra", "mta_tax", "tip_amount", "tolls_amount", "improvement_surcharge"
     )
 
-  // write to postgres
+  // write to postgres part
+
+  // set all options
+  val DB_DRIVER = "org.postgresql.Driver"
+  val DB_URL = "jdbc:postgresql://localhost:5432/"
+  val DB_TABLE = "pickup_by_hour"
   val DB_NAME = "docker"
   val DB_USER = "docker"
   val DB_PASS = "docker"
-  // what about formatters?
-  val con_str = "jdbc:postgresql://localhost:5432/" + DB_NAME + "?user=" + DB_USER + "&password=" + DB_PASS
-  val conn = DriverManager.getConnection(con_str)
-  try {
-    //get facts as data set of TaxiFact objects
-    val result = df.as[TaxiFact]
-      .collect()
-    // group them by hour
-      .groupBy(fact => hourFromTime(fact.pickUpDateTime))
-    // make a record from the grouped TaxiFact objects
-      .mapValues(a => RecFromFacts(a))
-    println(result)
-    // write each group in the postgresql as a table's row
-    result.foreach(h => write(conn)(h._1, h._2))
-  } finally {
-    if (conn != null) {
-      conn.close()
-    }
-  }
+
+  //get facts as data set of TaxiFact objects and convert them to the data set of records RecFromFacts
+  val result: Dataset[DataMartRec] = df.as[TaxiFact]
+    .collect()
+  // group them by hour
+    .groupBy(fact => hourFromTime(fact.pickUpDateTime))
+  // make a data set of records from the grouped TaxiFact objects
+    .map(entry => RecFromFacts(entry._1, entry._2)).toSeq.toDS()
+
+  // print the result (our DataMart)
+  result.sort("hourOfDay").show(24)
+  // store it to the postgresql table
+  result
+    .withColumnRenamed("hourOfDay", "hour_of_day")
+    .withColumnRenamed("totalRides", "total_trips")
+    .withColumnRenamed("minDistance", "min_distance")
+    .withColumnRenamed("maxDistance", "max_distance")
+    .withColumnRenamed("averageDistance", "avg_distance")
+    .withColumnRenamed("minPaycheck", "min_paycheck")
+    .withColumnRenamed("maxPaycheck", "max_paycheck")
+    .withColumnRenamed("averagePaycheck", "avg_paycheck")
+    .write
+    .format("jdbc")
+    .mode(SaveMode.Overwrite)
+    .option("driver", DB_DRIVER)
+    .option("url", DB_URL)
+    .option("dbtable", DB_TABLE)
+    .option("user", DB_USER)
+    .option("password", DB_PASS)
+    .save()
+
+  // write each group in the postgresql as a table's row
+  //result.foreach(h => write(conn)(h._1, h._2))
 
   // function to map taxi fact values into record of aggregates for database single record
-  def RecFromFacts(facts: Array[TaxiFact]): DataMartRec = {
+  def RecFromFacts(hourOfDay: Int, facts: Array[TaxiFact]): DataMartRec = {
     var minDistance = Double.MaxValue
     var maxDistance = 0.0
     var totalDistance: Double = 0.0
@@ -95,28 +113,11 @@ object DataApiDataSetIntoPG extends App {
         totalPaycheck += f.totalAmount
         numberOfTrips += 1
     })
-    DataMartRec(numberOfTrips, minDistance, maxDistance, totalDistance / numberOfTrips, minPaycheck, maxPaycheck, totalPaycheck / numberOfTrips)
+    DataMartRec(hourOfDay, numberOfTrips, minDistance, maxDistance, totalDistance / numberOfTrips, minPaycheck, maxPaycheck, totalPaycheck / numberOfTrips)
   }
 
   // parses the time string and returns hour values
   def hourFromTime(time: String): Int = {
     Integer.valueOf(time.split(" ")(1).split(":")(0))
-  }
-
-  // inserts one row
-  def write(conn: Connection)(hour: Int, rec: DataMartRec): Unit = {
-    val query = "INSERT INTO pickup_by_hour " +
-      " VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-
-    val stm = conn.prepareStatement(query)
-    stm.setInt(1, hour)
-    stm.setInt(2, rec.totalRides)
-    stm.setDouble(3, rec.minDistance)
-    stm.setDouble(4, rec.maxDistance)
-    stm.setDouble(5, rec.averageDistance)
-    stm.setDouble(6, rec.minPaycheck)
-    stm.setDouble(7, rec.maxPaycheck)
-    stm.setDouble(8, rec.averagePaycheck)
-    stm.executeUpdate()
   }
 }

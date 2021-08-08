@@ -23,4 +23,6 @@ Can be found in ```TBD```
 
 #### Compile & Run
 
+```./kafka-topics.sh --bootstrap-server localhost:29092 --create --topic books --if-not-exists --partitions 3```
+
 #### Build JAR file & Run

@@ -89,9 +89,6 @@ object DataApiDataSetIntoPG extends App {
     .option("password", DB_PASS)
     .save()
 
-  // write each group in the postgresql as a table's row
-  //result.foreach(h => write(conn)(h._1, h._2))
-
   // function to map taxi fact values into record of aggregates for database single record
   def RecFromFacts(hourOfDay: Int, facts: Array[TaxiFact]): DataMartRec = {
     var minDistance = Double.MaxValue

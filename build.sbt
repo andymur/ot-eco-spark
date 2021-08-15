@@ -2,10 +2,6 @@
 scalaVersion := "2.12.10"
 
 val sparkVersion = "3.1.0"
-val vegasVersion = "0.3.11"
-val postgresVersion = "42.2.2"
-val scalaTestVersion = "3.2.1"
-val flinkVersion = "1.12.1"
 
 name := "ot-eco-spark"
 organization := "com.andymur"
@@ -16,8 +12,6 @@ resolvers ++= Seq(
   "Typesafe Simple Repository" at "https://repo.typesafe.com/typesafe/simple/maven-releases",
   "MavenRepository" at "https://mvnrepository.com"
 )
-
-//mainClass := Some("com.andymur.ot.ecospark.Games")
 
 libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "3.2.1"
 
@@ -34,25 +28,6 @@ libraryDependencies ++= Seq(
   // logging
   "org.apache.logging.log4j" % "log4j-api" % "2.4.1",
   "org.apache.logging.log4j" % "log4j-core" % "2.4.1",
-  // postgres for DB connectivity
-  "org.postgresql" % "postgresql" % postgresVersion,
-  "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-  // https://mvnrepository.com/artifact/org.apache.flink/flink-java
-  "org.apache.flink" % "flink-java" % flinkVersion,
-  "org.apache.flink" %% "flink-streaming-java" % flinkVersion,
-  "org.apache.flink" %% "flink-clients" % flinkVersion,
-  "org.apache.flink" %% "flink-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-runtime-web" % flinkVersion,
-  "org.apache.flink" %% "flink-cep" % flinkVersion,
-  "org.apache.flink" %% "flink-cep-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-state-processor-api" % flinkVersion,
-  "org.apache.flink" %% "flink-table-uber" % flinkVersion,
-  "org.apache.flink" % "flink-test-utils-junit" % flinkVersion,
-  "org.apache.flink" %% "flink-test-utils" % flinkVersion,
-  "org.apache.flink" %% "flink-streaming-java" % flinkVersion,
-  "org.apache.flink" %% "flink-runtime" % flinkVersion,
-  // adding postgresql
-  "org.postgresql" % "postgresql" % "42.2.23"
+  "org.apache.spark" %% "spark-mllib" % "3.1.0"
 )
 

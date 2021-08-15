@@ -52,7 +52,11 @@ class PostgresScanBuilder(options: CaseInsensitiveStringMap) extends ScanBuilder
   ))
 }
 
-class PostgresPartition extends InputPartition
+class PostgresPartition(tableName: String, bottom: Int, top: Int) extends InputPartition {
+  def buildQuery(): String = {
+    s"select * from ${tableName} where user_id between ${bottom} and ${top}"
+  }
+}
 
 class PostgresScan(connectionProperties: ConnectionReadProperties) extends Scan with Batch {
   override def readSchema(): StructType = PostgresTable.schema
@@ -60,7 +64,7 @@ class PostgresScan(connectionProperties: ConnectionReadProperties) extends Scan 
   override def toBatch: Batch = this
 
   override def planInputPartitions(): Array[InputPartition] = {
-    (1 to connectionProperties.partitionNum).map(- => new PostgresPartition).toArray
+    (1 to connectionProperties.partitionNum).map(n => new PostgresPartition(connectionProperties.tableName, n, n + 10)).toArray
   }
 
   override def createReaderFactory(): PartitionReaderFactory = new PostgresPartitionReaderFactory(connectionProperties)
@@ -68,15 +72,16 @@ class PostgresScan(connectionProperties: ConnectionReadProperties) extends Scan 
 
 class PostgresPartitionReaderFactory(connectionProperties: ConnectionReadProperties)
   extends PartitionReaderFactory {
-  override def createReader(partition: InputPartition): PartitionReader[InternalRow] = new PostgresPartitionReader(connectionProperties)
+  override def createReader(partition: InputPartition): PartitionReader[InternalRow] = new PostgresPartitionReader(connectionProperties, (PostgresPartition) partition)
 }
 
-class PostgresPartitionReader(connectionProperties: ConnectionReadProperties) extends PartitionReader[InternalRow] {
+class PostgresPartitionReader(connectionProperties: ConnectionReadProperties, partition: PostgresPartition) extends PartitionReader[InternalRow] {
   private val connection = DriverManager.getConnection(
     connectionProperties.url, connectionProperties.user, connectionProperties.password
   )
-  private val statement = connection.createStatement()
-  private val resultSet = statement.executeQuery(s"select * from ${connectionProperties.tableName}")
+
+  private val statement = connection.prepareStatement(partition.buildQuery())
+  private val resultSet = statement.executeQuery()
 
   override def next(): Boolean = resultSet.next()
 

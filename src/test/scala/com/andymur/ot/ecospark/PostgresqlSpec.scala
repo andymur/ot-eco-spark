@@ -23,7 +23,7 @@ class PostgresqlSpec extends AnyFlatSpec with TestContainerForAll {
 
     spark
       .read
-      .format("org.example.datasource.postgres")
+      .format("com.andymur.ot.ecospark")
       .option("url", postgresServer.jdbcUrl)
       .option("user", postgresServer.username)
       .option("password", postgresServer.password)
@@ -48,7 +48,7 @@ class PostgresqlSpec extends AnyFlatSpec with TestContainerForAll {
 
     df
       .write
-      .format("org.example.datasource.postgres")
+      .format("com.andymur.ot.ecospark")
       .option("url", postgresServer.jdbcUrl)
       .option("user", postgresServer.username)
       .option("password", postgresServer.password)
@@ -65,10 +65,10 @@ class PostgresqlSpec extends AnyFlatSpec with TestContainerForAll {
     container match {
       case c: PostgreSQLContainer =>
         val conn = connection(c)
-        val stmt1 = conn.createStatement
-        stmt1.execute(Queries.createTableQuery)
-        val stmt2 = conn.createStatement
-        stmt2.execute(Queries.insertDataQuery)
+        val stmt1 = conn.prepareStatement(Queries.createTableQuery)
+        stmt1.execute
+        val stmt2 = conn.prepareStatement(Queries.insertDataQuery)
+        stmt2.execute
         conn.close()
     }
   }

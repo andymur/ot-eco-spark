@@ -65,6 +65,5 @@ object IrisClassifier extends App {
   myFeatures.show()
   val myPredictions = model.transform(myFeatures)
 
-  myPredictions.show()
-  // calculate the error
+  // TODO: calculate the error
 }

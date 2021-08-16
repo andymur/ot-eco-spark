@@ -28,6 +28,8 @@ libraryDependencies ++= Seq(
   // logging
   "org.apache.logging.log4j" % "log4j-api" % "2.4.1",
   "org.apache.logging.log4j" % "log4j-core" % "2.4.1",
-  "org.apache.spark" %% "spark-mllib" % "3.1.0"
+  // mllib
+  "org.apache.spark" %% "spark-mllib" % sparkVersion,
+  // kafka
+  "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion
 )
-

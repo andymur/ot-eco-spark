@@ -1,44 +1,30 @@
-# OTUS Spark Ecosystem Course. Third Homework. Working with RDD/DataFrame/DataSet in Spark.
+# OTUS Spark Ecosystem Course. Sixth Homework. Working with Spark Structured Streaming.
 
 ### Goal
 
-After completion of this homework you'll gain an experience working with RDD / DataFrame and DataSet APIs. You will be able to build DataMart based on raw data using Spark and various APIs. 
+After homework completion you'll be able to train and store Spark ML models. In the second part of this HW you'll be using Spark ML models along with Spark Structured Streaming.
 
 ### Assignment
 
 #### First part
 
-Create the first data frame containing facts from the data which are available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
-Create the second data frame containing locations from the data available in csv format (src/main/resources/data/taxi_zones.csv).
-Using Spark DataFrame DSL create a table with most popular areas of taxi orders. Print the result and also store it into the output parquet file.
+Build and train model for Iris classification. Data set description can be found here: https://ru.wikipedia.org/wiki/%D0%98%D1%80%D0%B8%D1%81%D1%8B_%D0%A4%D0%B8%D1%88%D0%B5%D1%80%D0%B0.  
+Data set in csv format can be found here: https://www.kaggle.com/arshid/iris-flower-dataset
+In the end you should provide either notebook or program.
 
 #### Second part
 
-Create RDD containing facts from the data available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
-Create lambda function to build a table showing the most frequent order time. Print the result and also store into the space separated text file.
-
-#### Third part
-
-Create DataSet containing facts from the data available in parquet format (src/main/resources/data/yellow_taxi_jan_25_2018).
-Using Spark DataSet DSL and lambda function create the table showing ride distance distribution. 
-Print the result and store it into the PostgreSQL DB table. For that purpose design and create the table structure and store it within the project.
-
-i.e., you end up with Data Mart containing different columns (e.g., total number of rides, average ride distance, min and max ride distance etc).
+Create an application which reads from the Apache Kafka topic (e.g. "input") csv records with 4 features and returns prediction result into another Apache Kafka topic (e.g. "prediction")
 
 ### Solution
 
 #### First part
 
-Can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiHomeWorkTaxi.scala``` or as Zeppelin notebook ```src/main/resources/OT-ECO-HW3.1.json```
+Can be found in ```src/main/scala/com/andymur/ot/ecospark/IrisClassifier.scala```
 
 #### Second part
 
-Can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiRDDMostFrequentHours.scala``` or as Zeppelin notebook ```src/main/resources/OT-ECO-HW3.2.json```
-
-#### Third part
-
-Make sure you started postgresql docker image. You can do it running ```docker-compose up``` from the project directory.
-After you can run the application which can be found in ```src/main/scala/com/andymur/ot/ecospark/DataApiDataSetIntoPG.scala```
+Can be found in ```src/main/scala/com/andymur/ot/ecospark/KafkaStreamReaderWriter.scala```
 
 ### How to check (compile, build & run, etc)
 
@@ -46,12 +32,8 @@ After you can run the application which can be found in ```src/main/scala/com/an
 
 Solution stored in the git repo. For checkout simply do this:
 
-```git clone -b third_home_work_datamart https://github.com/andymur/ot-eco-spark.git``` or check the link ```https://github.com/andymur/ot-eco-spark/tree/third_home_work_datamart```
+```git clone -b sixth_home_work_structured_streaming https://github.com/andymur/ot-eco-spark.git``` or check the link ```https://github.com/andymur/ot-eco-spark/tree/sixth_home_work_structured_streaming```
 
 #### Compile & Run
 
 We can compile & run our solution with a help from SBT or from IDE, see appropriate solution files above in "Solution" section (one file per each homework part).
-
-#### Use with Yandex Cloud
-
-You can also check Zeppelin notebook (one per each homework part). Import & run them (beware of different path you can have in your case, usually all paths are stored in the variables in the very beginning of the notebook).

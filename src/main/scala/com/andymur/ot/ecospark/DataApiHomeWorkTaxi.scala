@@ -1,14 +1,15 @@
 package com.andymur.ot.ecospark
 
-import org.apache.spark.sql.SparkSession
+import com.andymur.ot.ecospark.DataApiDataSetIntoPG.spark
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.desc
 
 // more about joins in Spark can be found here: https://sparkbyexamples.com/spark/spark-sql-dataframe-join/
 // http://ot-cluster:8890/#/notebook/2GAS31SRP
 
-object DataApiHomeWorkTaxi extends App {
+object DataApiHomeWorkTaxi {
   // creating context
-  val spark = SparkSession.builder()
+  val spark: SparkSession = SparkSession.builder()
     .appName("HW3")
     .config("spark.master", "local")
     .getOrCreate()
@@ -35,7 +36,9 @@ object DataApiHomeWorkTaxi extends App {
   // data set description can be found here: https://docs.microsoft.com/en-us/azure/open-datasets/dataset-taxi-yellow?tabs=azureml-opendatasets
   */
   // reading facts data
-  val taxiFactsDF = spark.read.parquet("src/main/resources/data/yellow_taxi_jan_25_2018")
+  def readFacts(factsDataPath: String): DataFrame = {
+    spark.read.parquet(factsDataPath)
+  }
 
   /*root
   |-- LocationID: integer (nullable = true)
@@ -44,20 +47,32 @@ object DataApiHomeWorkTaxi extends App {
   |-- service_zone: string (nullable = true)
   */
   // reading location data
-  val taxiLocationsDF = spark.read
-    .option("delimiter", value = ",")
-    .schema("LocationID integer, Borough string, Zone string, service_zone string")
-    .csv("src/main/resources/data/taxi_zones.csv")
+  def readLocations(locationsDataPath: String): DataFrame = {
+    spark.read
+      .option("delimiter", value = ",")
+      .schema("LocationID integer, Borough string, Zone string, service_zone string")
+      .csv(locationsDataPath)
+  }
 
-  // joining by start area (PULocationID)
-  val joinedByStartLocationDF = taxiFactsDF.join(taxiLocationsDF, taxiFactsDF("PULocationID") === taxiLocationsDF("LocationID"), "inner")
-  // sorting by most used first
-  val sortedByStartAreaCountInMostPopularOrder = joinedByStartLocationDF.groupBy("Borough").count().orderBy(desc("count"))
+  def mostUsedAsStartLocations(taxiFacts: DataFrame, locations: DataFrame): DataFrame = {
+    // joining by start area (PULocationID)
+    val joinedByStartLocationDF = taxiFacts.join(locations, taxiFacts("PULocationID") === locations("LocationID"), "inner")
+    // sorting by most used first
+    joinedByStartLocationDF.groupBy("Borough").count().orderBy(desc("count"))
+  }
 
-  // printing the result
-  sortedByStartAreaCountInMostPopularOrder.show()
+  def writeMostUsedAsStartLocations(sortedByStartAreaCountInMostPopularOrder: DataFrame, path: String): Unit = {
+    //TODO: how to use my own partitioning?
+    sortedByStartAreaCountInMostPopularOrder.write.parquet(path)
+  }
 
-  // storing it into parquet files
-  //TODO: how to use my own partitioning?
-  sortedByStartAreaCountInMostPopularOrder.write.parquet("src/main/resources/data/most_popular_starting_areas_jan_25_2018")
+  def main(args: Array[String]): Unit = {
+    // printing the result
+    val sortedByStartAreaCountInMostPopularOrder = mostUsedAsStartLocations(readFacts("src/main/resources/data/yellow_taxi_jan_25_2018"), readLocations("src/main/resources/data/taxi_zones.csv"))
+    // printing the result
+    sortedByStartAreaCountInMostPopularOrder.show()
+    // storing it into parquet files
+    //writeMostUsedAsStartLocations(sortedByStartAreaCountInMostPopularOrder, "src/main/resources/data/most_popular_starting_areas_jan_25_2018")
+  }
+
 }

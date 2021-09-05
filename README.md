@@ -1,4 +1,4 @@
-# OTUS Spark Ecosystem Course. Third Homework. Working with RDD/DataFrame/DataSet in Spark.
+# OTUS Spark Ecosystem Course. Seventh Homework. Testing Spark applications.
 
 ### Goal
 

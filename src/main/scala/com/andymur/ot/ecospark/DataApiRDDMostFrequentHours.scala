@@ -1,7 +1,6 @@
 package com.andymur.ot.ecospark
 
 import org.apache.spark.sql.SparkSession
-;
 
 object DataApiRDDMostFrequentHours extends App {
 

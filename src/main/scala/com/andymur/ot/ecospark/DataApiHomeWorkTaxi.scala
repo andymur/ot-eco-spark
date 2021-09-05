@@ -72,7 +72,7 @@ object DataApiHomeWorkTaxi {
     // printing the result
     sortedByStartAreaCountInMostPopularOrder.show()
     // storing it into parquet files
-    //writeMostUsedAsStartLocations(sortedByStartAreaCountInMostPopularOrder, "src/main/resources/data/most_popular_starting_areas_jan_25_2018")
+    writeMostUsedAsStartLocations(sortedByStartAreaCountInMostPopularOrder, "src/main/resources/data/most_popular_starting_areas_jan_25_2018")
   }
 
 }

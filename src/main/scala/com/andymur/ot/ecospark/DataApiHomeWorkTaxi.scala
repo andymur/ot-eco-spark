@@ -67,9 +67,7 @@ object DataApiHomeWorkTaxi {
   }
 
   def main(args: Array[String]): Unit = {
-    // printing the result
     val sortedByStartAreaCountInMostPopularOrder = mostUsedAsStartLocations(readFacts("src/main/resources/data/yellow_taxi_jan_25_2018"), readLocations("src/main/resources/data/taxi_zones.csv"))
-    // printing the result
     sortedByStartAreaCountInMostPopularOrder.show()
     // storing it into parquet files
     writeMostUsedAsStartLocations(sortedByStartAreaCountInMostPopularOrder, "src/main/resources/data/most_popular_starting_areas_jan_25_2018")

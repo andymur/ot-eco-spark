@@ -1,8 +1,9 @@
 package com.andymur.ot.ecospark
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{Row, SparkSession}
 
-object DataApiRDDMostFrequentHours extends App {
+object DataApiRDDMostFrequentHours {
 
   //TODO: extract somewhere context creation not to copy-paste...but for quick checking it might be better to keep as it is all in one file
 
@@ -35,25 +36,36 @@ object DataApiRDDMostFrequentHours extends App {
   */
 
   // reading facts data
-  val taxiFactsRDD = spark.read.parquet("src/main/resources/data/yellow_taxi_jan_25_2018").rdd
+  def readFacts(factsLocation: String): RDD[Row] = {
+    spark.read.parquet("src/main/resources/data/yellow_taxi_jan_25_2018").rdd
+  }
 
-  // grouping to show the most frequent order time, it could be grouped like day hour -> number of entries in our fact table
-  val mostFrequentOrderTimes = taxiFactsRDD
-    // creating RDD with one column -- hour value of the order (0-23)
-    .map(
-      row => Integer.valueOf(row(1).toString.split(" ")(1).split(":")(0)))
-    // grouping RDDs by hour value
-    .groupBy(
+  def findMostBusyHours(taxiFactsRDD: RDD[Row]): RDD[String] = {
+    // grouping to show the most frequent order time, it could be grouped like day hour -> number of entries in our fact table
+    val mostFrequentOrderTimes: RDD[(Integer, Int)] = taxiFactsRDD
+      // creating RDD with one column -- hour value of the order (0-23)
+      .map(
+        row => Integer.valueOf(row(1).toString.split(" ")(1).split(":")(0)))
+      // grouping RDDs by hour value
+      .groupBy(
         el => el)
-    // making a map (list of entries where each entry has a first unique key value) with hour as a key and number of orders as a value
-    .mapValues(
-      l => l.size)
-    // sorting the result by number of orders in descending order
-    .sortBy(_._2, ascending = false)
+      // making a map (list of entries where each entry has a first unique key value) with hour as a key and number of orders as a value
+      .mapValues(
+        l => l.size)
+      // sorting the result by number of orders in descending order
+      .sortBy(_._2, ascending = false)
 
-  // creating a final table RDD
-  val tableRDD = mostFrequentOrderTimes.map(r => r._1 + " " + r._2)
+    // creating a final table RDD
+    mostFrequentOrderTimes.map(r => r._1 + " " + r._2)
+  }
 
-  println(tableRDD.collect().mkString("\n"))
-  tableRDD.saveAsTextFile("src/main/resources/data/most_frequent_order_times")
+  def saveResultIntoLocation(tableRDD: RDD[String], resultLocation: String): Unit = {
+    tableRDD.saveAsTextFile(resultLocation)
+  }
+
+  def main(args: Array[String]): Unit = {
+    val tableRDD: RDD[String] = findMostBusyHours(readFacts("src/main/resources/data/yellow_taxi_jan_25_2018"))
+    println(tableRDD.collect().mkString("\n"))
+    saveResultIntoLocation(tableRDD, "src/main/resources/data/most_frequent_order_times")
+  }
 }

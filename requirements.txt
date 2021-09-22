@@ -1,0 +1,3 @@
+nltk==3.5
+pyspark
+kafka-python

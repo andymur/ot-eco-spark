@@ -13,3 +13,4 @@ build.properties
 /ot-eco-rsa-cluster.pub
 /src/main/resources/data/most_popular_starting_areas_jan_25_2018/
 /src/main/resources/data/most_frequent_order_times/
+*pyc

@@ -15,3 +15,4 @@ build.properties
 /src/main/resources/data/most_frequent_order_times/
 *pyc
 *dat
+tech_tags.csv

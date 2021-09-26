@@ -1,5 +1,6 @@
 import unittest
 import vacancy_nlp
+import vacancy_reader
 
 class TestNLPParsing(unittest.TestCase):
 

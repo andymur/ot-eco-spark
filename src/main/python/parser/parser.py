@@ -6,7 +6,6 @@ import sys
 
 # parse (tech) tags, location (city, country), salary (range or number)
 def parse(postlines, tags_dict, cities_dict, lands_dict):
-    #print(postlines)
     stemmed_word_pairs = stemmer.stem_lines(postlines)
     tags = []
     for (original_word, stemmed_word) in stemmed_word_pairs:
@@ -14,6 +13,11 @@ def parse(postlines, tags_dict, cities_dict, lands_dict):
             tags.append(original_word)
     return (tags)
 
+def read_cities_from_csv(source_file):
+    pass
+
+def read_countries_from_csv(source_file):
+    pass
 
 def read_tags_dict_from_csv(source_file):
     tags_dict = {}

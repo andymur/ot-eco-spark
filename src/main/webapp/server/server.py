@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import random
 from flask import request, Response
 from flask import Flask
 from flask_cors import CORS
@@ -17,23 +18,33 @@ countries = {
     "Estonia": ["Tallinn"]
 }
 
+
 @app.route("/tags/", methods=['GET'])
 def get_tags():
-    content = {"payload": tags}
-    response = Response(response=json.dumps(content), status=200, mimetype='application/json')
-    return response
+    return create_response(tags)
 
 @app.route("/countries/", methods=['GET'])
 def get_countries():
-    content = {"payload": list(countries.keys())}
-    response = Response(response=json.dumps(content), status=200, mimetype='application/json')
-    return response
+    return create_response(list(countries.keys()))
 
 @app.route("/cities/<country>", methods=['GET'])
 def get_cities(country):
     cities = countries.get(country)
     if cities is None:
         raise Exception('Country {0} not found!'.format(country))
-    content = {"payload": cities}
-    response = Response(response=json.dumps(content), status=200, mimetype='application/json')
-    return response
+    return create_response(cities)
+
+@app.route("/jobstatistics/", methods=['POST'])
+def search():
+    job_stats = [{'year': 2020, 'month': 1, 'count': random.randint(10, 20)}, 
+             {'year': 2020, 'month': 2, 'count': random.randint(10, 20)}, 
+             {'year': 2020, 'month': 3, 'count': random.randint(10, 20)}, 
+             {'year': 2020, 'month': 4, 'count': random.randint(10, 20)}, 
+             {'year': 2020, 'month': 5, 'count': random.randint(10, 20)}, 
+            ]
+    print(type(request.json))
+    return create_response(job_stats)
+
+def create_response(payload):
+    content = {"payload": payload}
+    return Response(response=json.dumps(content), status=200, mimetype='application/json')

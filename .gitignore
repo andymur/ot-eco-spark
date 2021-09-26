@@ -21,7 +21,8 @@ tech_tags.csv
 
 .DS_Store
 node_modules
-/dist
+src/main/webapp/app/dist/
+yarn.lock
 
 # local env files
 .env.local

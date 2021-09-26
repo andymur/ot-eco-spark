@@ -1,18 +1,42 @@
 /target/
 /.bsp/
-/.idea/
 target/*
 /project/target/*
 project/project
 project/project/*
+
 /out/*
 build.properties
+
 /ot-eco-rsa
 /ot-eco-rsa.pub
 /ot-eco-rsa-cluster
 /ot-eco-rsa-cluster.pub
-/src/main/resources/data/most_popular_starting_areas_jan_25_2018/
-/src/main/resources/data/most_frequent_order_times/
+
 *pyc
 *dat
 tech_tags.csv
+**/.env/*
+**/env
+
+.DS_Store
+node_modules
+/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

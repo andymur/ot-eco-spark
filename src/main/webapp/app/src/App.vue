@@ -26,6 +26,19 @@
   width: 60%;
 }
 
+.date-selector {
+  text-align: left;
+}
+
+.date-selector select {
+  font-size: 1.5em;  
+}
+
+.date-selector input {
+  font-size: 1.5em;
+  margin-left: 1em;
+}
+
 #nav a {
   font-weight: bold;
   color: #2c3e50;

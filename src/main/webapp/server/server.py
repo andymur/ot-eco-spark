@@ -43,6 +43,11 @@ def search():
              {'year': 2020, 'month': 5, 'count': random.randint(10, 20)}, 
             ]
     print(type(request.json))
+    print(request.json['fromPeriod'])
+    print(request.json['toPeriod'])
+    print(request.json['city'])
+    print(request.json['country'])
+    print(request.json['tags'])
     return create_response(job_stats)
 
 def create_response(payload):

@@ -1,3 +1,5 @@
+#!/usr/bin/python3.7
+
 def spark_context_creator():
     conf = SparkConf()
     conf.setAppName("AppName")

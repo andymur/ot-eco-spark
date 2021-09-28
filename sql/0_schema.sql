@@ -20,9 +20,9 @@ CREATE TABLE cities (
 );
 
 CREATE TABLE posts (
-	id BIGSERIAL PRIMARY_KEY,
-	posted_at TIMESTAMP NOT NULL,  -- post timestamp
-	created_at TIMESTAMP NOT NULL, -- record creation timestamp
+	id SERIAL PRIMARY KEY,
+	posted_at INTEGER,  -- post timestamp
+	created_at TIMESTAMP, -- record creation timestamp
 	city_id INTEGER,
 	land_id INTEGER,
 	min_salary DOUBLE PRECISION,

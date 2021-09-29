@@ -21,13 +21,14 @@ CREATE TABLE cities (
 
 CREATE TABLE posts (
 	id SERIAL PRIMARY KEY,
-	posted_at INTEGER,  -- post timestamp
+	hash_code VARCHAR(35) UNIQUE NOT NULL,
+	posted_at INTEGER,  -- post year & month in format YYYYMM
 	created_at TIMESTAMP, -- record creation timestamp
 	city_id INTEGER,
 	land_id INTEGER,
 	min_salary DOUBLE PRECISION,
 	max_salary DOUBLE PRECISION,
-	tags INTEGER[],
+	tags VARCHAR[],
 	words TEXT,
 	FOREIGN KEY (land_id) REFERENCES lands (id),
 	FOREIGN KEY (city_id) REFERENCES cities (id)

@@ -11,12 +11,15 @@ def print_tags(source_file, output_type):
     with open(source_file) as f:
         csvreader = csv.reader(f, delimiter=';', quotechar="'")
         tag_id = 0
+        tag_set = set()
         for row in csvreader:
-            if output_type == 'sql':
-                print("INSERT INTO tags(tag_value) VALUES('{0}');".format(row[1]))
-            else:
-                tag_id += 1
-                print("'{0}';'{1}';'{2}'".format(tag_id, row[0], row[1]))
+            if row[1] not in tag_set:
+                tag_set.add(row[1])
+                if output_type == 'sql':
+                    print("INSERT INTO tags(tag_value) VALUES('{0}');".format(row[1]))
+                else:
+                    tag_id += 1
+                    print("'{0}';'{1}';'{2}'".format(tag_id, row[0], row[1]))
 
 if __name__ == "__main__":
 

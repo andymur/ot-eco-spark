@@ -94,13 +94,14 @@ export default {
       cityOptions : [],
       points: [],
       fromMonth: null,
-      fromYear: 2020,
+      fromYear: 2019,
       toMonth: null,
       toYear: 2021
     };
   },
   methods: {
     search: function () {
+      this.points = []
       let request = {
                       "fromPeriod": this.convertRequestPeriod(this.fromMonth, this.fromYear), 
                       "toPeriod": this.convertRequestPeriod(this.toMonth, this.toYear),
@@ -108,6 +109,7 @@ export default {
                       "country": this.country,
                       "tags": this.tags
                     };
+      console.log(request);
       axios
         .post("http://localhost:5000/jobstatistics/", 
           request,
@@ -138,9 +140,9 @@ export default {
         return null;
       }
       if (monthValue < 10) {
-        return yearValue + "-0" + monthValue;
+        return yearValue + "0" + monthValue;
       } else {
-        return yearValue + "-" + monthValue;
+        return yearValue +  monthValue;
       }
     }
   },

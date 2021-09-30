@@ -589,7 +589,6 @@ INSERT INTO tags(tag_value) VALUES('spectrum');
 INSERT INTO tags(tag_value) VALUES('spock');
 INSERT INTO tags(tag_value) VALUES('sqs');
 INSERT INTO tags(tag_value) VALUES('sql');
-INSERT INTO tags(tag_value) VALUES('sql');
 INSERT INTO tags(tag_value) VALUES('sqlalchemy');
 INSERT INTO tags(tag_value) VALUES('squeryl');
 INSERT INTO tags(tag_value) VALUES('sre');

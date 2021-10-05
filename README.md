@@ -171,7 +171,8 @@ Result:
 3934	Kilauea
 3362	Bezymianny
 3292	Klyuchevskoy
-Time taken: 11.513 seconds, Fetched: 10 row(s)```
+Time taken: 11.513 seconds, Fetched: 10 row(s)
+```
 
 
 4. Top ten russian volcanos (from top to bottom) with most recorded events (each eruption contains several events).
